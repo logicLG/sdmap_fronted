@@ -1,0 +1,38 @@
+/*
+refer to http://stevesanderson.github.io/fixed-height-layouts-demo/two-columns.html
+*/
+body {
+  font-family: 'Helvetica Neue', Arial, Sans-Serif;
+  /*font-family: Helvetica,Microsoft YaHei,STHeiti STXihei, Microsoft JhengHei,Tohoma, Arial*/
+}
+
+.header, .footer {
+  color: #4a4e55;
+  background: #f6f8fb;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  padding: 0 0.5em;
+  /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #696f77), color-stop(100%, #f2f6fc));*/
+  /*background: -webkit-linear-gradient(top, #696f77 0%, #f8f8f9 100%);*/
+  /*background: -ms-linear-gradient(top, #696f77 0%, #f8f8f9 100%);*/
+}
+
+.body, .pane {
+  background: #f6f8fb;
+  /*border-top:1px solid #d4e6fb;*/
+}
+
+/*.right.col { border-left: 1px solid black; }*/
+.right.col .body {
+  padding: 0 1em;
+  background: #f8f8f9
+}
+
+.left.col .body {
+  background: #f6f8fb;
+}
+
+.el-menu-item.is-active {
+  color: #ffffff !important;
+  background-color: #409EFF !important;
+}
+
