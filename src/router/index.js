@@ -1,14 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ProfessionModel from '../views/project/professionModel'
 import CommonModel from '../views/project/commonModel'
 import Main from '../views/index.vue'
-import DataDisplay from '../views/project/linkouter/vectorTileDisplay'
+import VectorTileDisplay from '../views/project/linkouter/vectorTileDisplay'
 import Abstract from '../views/layout/abstract'
 import AnalyseModel from '../views/project/analyseModel'
 import IndextoBase from '../views/project/indextoBase'
 import ConnectionManager from '../views/project/connectionManager'
-import VectorTileDisplay from '../views/project/linkouter/vectorTileDisplay'
 import VectorMakeDisplay from '../views/project/linkouter/vectorMakeDisplay'
 import RouteDisplay from '../views/project/linkouter/routeDisplay'
 import allHistory from '../views/project/allHistory'
@@ -124,16 +122,7 @@ export const appRouter = [
     icon: 'fa fa-server fa-lg',
     component: Abstract,
     children: [
-      {
-        meta: {
-          title: '服务监控',
-          requireAuth: false
-        },
-        name: 'monitor',
-        path: 'monitor',
-        icon: 'fa fa-tachometer fa-lg',
-        component: serviceWatch
-      },
+
       {
         meta: {
           title: '服务统计',
@@ -177,20 +166,20 @@ export const appRouter = [
           title: '基础空间分析',
           requireAuth: false
         },
-        name: 'profession',
-        path: 'profession',
+        name: 'analyse',
+        path: 'analyse',
         icon: 'fa fa-cube fa-lg',
-        componnt: ProfessionModel
+        component: AnalyseModel
       },
       {
         meta: {
-          title: '专题数据分析',
+          title: '模型监控',
           requireAuth: false
         },
-        name: 'analyse',
-        path: 'analyse',
-        icon: 'fa fa-empire fa-lg',
-        component: AnalyseModel
+        name: 'monitor',
+        path: 'monitor',
+        icon: 'fa fa-tachometer fa-lg',
+        component: serviceWatch
       }
     ]
   },

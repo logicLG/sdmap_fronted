@@ -88,7 +88,7 @@
       getloginRecordData() {
         // debugger;
         let that = this;
-        debugger;
+        // debugger;
         that.$axios.get(that.$URL.loginURL+"?start="+this.value1[0].getTime() + "&end="+this.value1[1].getTime(),
           {
             // page: that.pageProps.loginRecordcurrentPage,

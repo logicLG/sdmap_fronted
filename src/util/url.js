@@ -1,6 +1,4 @@
 const URL = {
-  // Vue.prototype.$serverUrl = "http://192.168.1.5:13000/dldsj/"
-
   connURL: "/data/conn",
   confURL: "/data/conn/conf",
   indexURL: "/data/conn/sync",
@@ -16,5 +14,8 @@ const URL = {
   modelMonitorUrl: '/model/yarn/state',
   downloadModel: '/model/result/download',
   killcondition:'/model/yarn/kill',
+  submitURL: "/model/yarn/submit",
+  publicModelUrl: '/model',
+  modelInfoUrl: '/model',
 }
 export default URL;
