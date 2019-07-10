@@ -2,8 +2,7 @@
   <div>
     <el-dialog
       :visible.sync="dialogVisible.v"
-      :artifactId="artifactId"
-    >
+      :artifactId="artifactId">
       <h4 style="padding-left:42%;font-size:20px;">模型参数</h4>
       <el-form style="padding-top:20px"
                :model="myform" :rules="rules" ref="myform"
@@ -12,9 +11,7 @@
           <el-input v-model="taskname"></el-input>
         </el-form-item>
         <el-form-item v-for="(value,i) in params"
-
-                      :label="params[i].label"
-        >
+                      :label="params[i].label">
           <el-input v-model="params[i].defaultvalue"></el-input>
         </el-form-item>
         <el-form-item>
@@ -23,7 +20,6 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
   </div>
 </template>
 
@@ -57,29 +53,31 @@
     methods: {
       initParallelModel() {
         let infoData = {};
-        let obj = this;
-        this.$axios.get(obj.$URL.publicModelUrl, {"artifactId": this.artifactId})
+        let that = this;
+        this.$axios.get(that.$URL.publicModelUrl, {"artifactId": this.artifactId})
           .then((res) => {
             if (res.status === 'ok') {
               if (res.result.length === 0) {
-                obj.infoData = {};
+                that.infoData = {};
                 return;
               }
 
-              obj.infoData = res.result[0];
+              that.infoData = res.result[0];
               //let modelpara = [];
-              let parm = JSON.parse(obj.infoData.parameters);
-              obj.baseparam = parm.modelfield.baseParam;
+              let parm = JSON.parse(that.infoData.parameters);
+              that.baseparam = parm.modelfield.baseParam;
               if (parm.modelfield.modelParam) {
-                obj.modelparam = parm.modelfield.modelParam;
+                that.modelparam = parm.modelfield.modelParam;
               }
-              if (!parm.modelfield.modelParam) {
-                obj.params = obj.baseparam.concat(obj.modelparam);
-              } else obj.params = obj.baseparam;
+              if (parm.modelfield.modelParam) {
+                that.params = that.baseparam.concat(that.modelparam);
+              } else {
+                that.params = that.baseparam;
+              }
             }
           }).catch(function (error) {
           console.log(error);
-          obj.$message.error('模型参数获取失败!');
+          that.$message.error('模型参数获取失败!');
         });
         /*if (this.$refs.myform)
             this.$refs.myform.reset();*/
@@ -99,15 +97,30 @@
         for (let i = 0; i < obj.modelparam.length; i++) {
           temp.push(obj.modelparam[i].defaultvalue)
         }
-        para.push(temp.join(","));
+        if (temp.length != 0)
+          para.push(temp.join(","));
         modelparamData.params = para;
         modelparamData.customname = this.taskname;
-        this.$axios.post(obj.$URL.submitURL, {
+        let result;
+        debugger
+        if (this.$parent.modelName == "analyseModel") {
+          result = {
             "name": modelparamData.customname,
             "mainClass": obj.infoData.mainclass,
             "appResource": obj.infoData.jarpath,
-            "args": obj.artifactId + "$" + para.join("$")
-          }
+            "args": para.join("$"),
+            "artifactid": obj.artifactId
+          };
+        } else {
+          result = {
+            "name": modelparamData.customname,
+            "mainClass": obj.infoData.mainclass,
+            "appResource": obj.infoData.jarpath,
+            "args": obj.artifactId + "$" + para.join("$"),
+            "artifactid": obj.artifactId
+          };
+        }
+        this.$axios.post(obj.$URL.submitURL, result
         ).then(function (res) {
           if (res.status == "ok") {
             obj.$message({

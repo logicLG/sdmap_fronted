@@ -6,7 +6,9 @@ axios.defaults.timeout = 5000;
 // axios.defaults.baseURL = 'http://192.168.240.25:13000/dldsj/';
 // axios.defaults.baseURL = 'http://172.20.3.106/sdmap/';//这是调用数据接口,TODO:需要设置axios的跳转链接 山东IP
 // axios.defaults.baseURL = 'http://192.168.1.90:15000/sdmap/';
-axios.defaults.baseURL = 'http://192.168.137.81:15000/sdmap/';
+// axios.defaults.baseURL = 'http://192.168.137.81:15000/sdmap/';
+
+axios.defaults.baseURL = 'http://172.20.3.106:15000/sdmap/';
 // axios.defaults.baseURL = 'http://localhost:15000/sdmap/'
 
 // http request 拦截器，通过这个，我们就可以把Cookie传到后台

@@ -6,11 +6,11 @@
     :before-close="modalClose"
     center>
     <el-form label-position="left" :rules="rules" label-width="110px" size="mini" :model="dbconfForm">
-      <el-form-item label="目录" prop="name">
-        <el-input v-model="dbconfForm.catalog"></el-input>
-      </el-form-item>
       <el-form-item label="连接名称" prop="name">
         <el-input v-model="dbconfForm.name"></el-input>
+      </el-form-item>
+      <el-form-item label="目录" prop="name">
+        <el-input v-model="dbconfForm.catalog"></el-input>
       </el-form-item>
       <el-form-item label="主机名" prop="host">
         <el-input v-model="dbconfForm.host"></el-input>
@@ -72,7 +72,7 @@
         },
         rules: {
           catalog: [
-            {required: true, message: '请输入目录名称', trigger: 'blur'}
+            {required: true, message: '请输入目录名称', trigger: 'change'}
           ],
           name: [
             {required: true, message: '请输入连接名称', trigger: 'blur'}

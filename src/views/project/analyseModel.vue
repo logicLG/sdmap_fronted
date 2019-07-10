@@ -26,6 +26,7 @@
         cards: null,
         modalTitle: "",
         centerDialogVisible: false,
+        modelName: "analyseModel",
         isVisible: false,
         signVisible: {
           v: false,

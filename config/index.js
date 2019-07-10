@@ -15,7 +15,8 @@ module.exports = {
       '/sdmap': {
         // target: 'http://192.168.240.25:13000/',
         // target: 'http://192.168.1.90/',
-        target: 'http://192.168.137.81:15000/',
+        // target: 'http://192.168.137.81:15000/',
+        target: 'http://172.20.3.106:15000/',
         // target: 'http://localhost/',
         changeOrigin: true, // 允许跨域
         pathRewrite: {

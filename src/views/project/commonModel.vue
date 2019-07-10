@@ -27,6 +27,7 @@
         modalTitle: "",
         centerDialogVisible: false,
         isVisible: false,
+        modelName: "commonModel",
         signVisible: {
           v: false,
         },

@@ -46,6 +46,14 @@
     },
     data() {
       return {
+        pickerOptions: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }]
+        },
         dbsource: [],
         selectItem: '',
         jumpChecked: true,
@@ -62,7 +70,7 @@
         tableData: {
           isSet: false,//是否编辑
           columns: [
-            {"name": "timestmp", "label": "timestmp", type: "text",width: 160,height:30},
+            {"name": "timestmp", "label": "timestmp", type: "text", width: 260, height: 30},
             {"name": "formattedMessage", "label": "formattedMessage", type: "text",width: 160,height:30},
             {"name": "loggerName", "label": "loggerName", type: "text",width: 160,height:30},
             {"name": "levelString", "label": "levelString", type: "text",width: 160,height:30},
@@ -103,7 +111,8 @@
 
               let date = new Date(item["timestmp"]);
 
-              item["timestmp"] = date.getFullYear() +"年" + date.getUTCMonth() + "月" + date.getUTCDay()+"日" + date.getHours()+"时";
+              item["timestmp"] = that.$tool.timestampConvert(date);
+              // date.getFullYear() +"年" + date.getUTCMonth() + "月" + date.getUTCDay()+"日" + date.getHours()+"时" + date.getSeconds()+"秒";
             }
 
             // debugger;

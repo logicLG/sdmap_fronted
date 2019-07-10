@@ -43,11 +43,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       sourceMap: config.build.productionSourceMap,
       parallel: true
     }),
-    new CopyWebpackPlugin([
-        {from: "./src/util/url.js", to: './static/js/url.js'},
-        {from: "./src/util/axios.js", to: "./static/js/axios.js"}
-      ]
-    ),
+    // new CopyWebpackPlugin([
+    //     {from: "./src/util/url.js", to: './static/js/url.js'},
+    //     {from: "./src/util/axios.js", to: "./static/js/axios.js"}
+    //   ]
+    // ),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),

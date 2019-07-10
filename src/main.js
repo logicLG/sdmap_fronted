@@ -47,7 +47,7 @@ Vue.prototype.$globalData = {
 const router = new VueRouter(RouterConfig)
 
 Vue.config.productionTip = false
-Vue.prototype.$serverUrl = "http://192.168.137.81:15000/sdmap"
+Vue.prototype.$serverUrl = "http://172.20.3.106:15000/sdmap"
 
 /* eslint-disable no-new */
 new Vue({

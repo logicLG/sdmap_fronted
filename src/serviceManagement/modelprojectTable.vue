@@ -109,9 +109,9 @@
 </template>
 
 <script>
-    import dataPagination from '../components/pagination/datapagination';
+  import dataPagination from '../components/pagination/datapagination';
 
-    export default {
+  export default {
         name: "modelProjectTable",
         components: {
           "data-pagination": dataPagination,
@@ -144,46 +144,13 @@
                   if(res.status === 'ok')obj.getProjectData();
               });
             },
-            deleteRow(index, rows) {
-                let obj = this;
-                //TODO 在数据中删除
-                //调用删除数据的方法，再获取数据
-                this.$confirm('是否删除该条模型运行记录？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    obj.$axios.remove(this.$URL.deleteParallelJobUrl + rows.id + '/delete')
-                        .then(function (response) {
-                            if (response.code === 200) {
-                                obj.$message({
-                                    type: 'success',
-                                    message: '删除成功!'
-                                });
-                                obj.$emit('childrefresh');
-                            } else {
-                                obj.$message({
-                                    type: 'warning',
-                                    message: '删除错误!请刷新列表'
-                                });
-                            }
-                        }).catch(function (error) {
-                        obj.$message.error("删除失败！");
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-            },
             download(index, rows) {
                 //下载数据
                 let obj = this;
                 // this.$axios.get(obj.$URL.downloadModel + "?appId=" + rows.id).then(function (res) {
                 //
                 // })
-                window.open(this.$serverUrl + obj.$URL.downloadModel + "?appId=" + rows.id + "&tk=6d0859a912424ae3b41c306a5a1d7022",'_blank');
+              window.open(obj.$serverUrl + obj.$URL.downloadModel + "?appId=" + rows.id + "&tk=6d0859a912424ae3b41c306a5a1d7022", '_blank');
             },
             //first--one
             getProjectData() {
@@ -221,15 +188,14 @@
                                     row.progress = 0;
                                     row.download = true;
                                     row.view = true;
-                                    row.delete = true;
+                                  row.delete = true;
                                     row.killCondition = false;
 
                                     if (singleData.finalStatus === "FAILED") {
                                         row.progress = 100;
                                         row.status = "exception";
+                                      row.state = "FAILED";
                                         row.delete = false;
-                                        row.map = true;
-                                        row.chart = true;
                                         row.killCondition = true;
                                         if (row.finishTime)
                                         {
@@ -239,6 +205,7 @@
                                     {
                                         row.progress = 0;
                                         row.status = "exception";
+                                      row.state = "KILLED";
                                         row.delete = false;
                                         row.map = true;
                                         row.chart = true;
@@ -250,6 +217,7 @@
                                     }
                                     else if(singleData.finalStatus === "SUCCEEDED"){
                                         row.progress = 100;
+                                      row.state = "SUCCEEDED";
                                         row.status = "success";
                                         row.download = false;
                                         row.view = false;
@@ -262,13 +230,23 @@
                                           row.finishTime = obj.$tool.timestampConvert(row.finishTime);
                                         }
                                     }
-                                    else if (singleData.finalStatus === "UNDEFINED" || singleData.finalStatus === "NEW" || singleData.finalStatus === "NEW_SAVING"
-                                            || singleData.finalStatus === "SUBMITTED" || singleData.finalStatus === "ACCEPTED")
-                                    {
-                                          row.state = "RUNNING";
-                                    }
+                                    // else if (singleData.state === "UNDEFINED" || singleData.state === "NEW" || singleData.state === "NEW_SAVING"
+                                    //         || singleData.state === "SUBMITTED" || singleData.state === "ACCEPTED" || singleData.state === "RUNNING")
+                                    // {
+                                    //   row.progress = 0;
+                                    //   row.status = "success";
+                                    //   row.download = false;
+                                    //   row.view = false;
+                                    //   row.delete = false;
+                                    //   row.map = false;
+                                    //   row.chart = false;
+                                    //   row.killCondition = true;
+                                    //   row.state="RUNNING";
+                                    // }
                                     else {
-                                        row.progress = 0;
+                                      if (row.progress !== "") {
+                                        row.progress = row.progress * 100;
+                                      }
                                         row.status = "success";
                                         row.download = false;
                                         row.view = false;
@@ -281,7 +259,7 @@
                                           row.finishTime = obj.$tool.timestampConvert(row.finishTime);
                                         }
                                     }
-                                    debugger;
+                                  // debugger;
                                     if (obj.task.length == obj.pageProps.pageSize)
                                     {
                                       obj.task.splice(obj.pageProps.pageSize - 1,1);
@@ -302,12 +280,21 @@
                                               if (response.result.progress !== "") {
                                                 obj.task[index].progress = response.result.progress*100;
                                               }
-                                              obj.task[index].state = "RUNNING";
+                                              obj.task[index].status = "success";
                                               obj.task[index].finishTime = "";
                                               obj.task[index].download = true;
                                               obj.task[index].killCondition=false;
-                                            } else if (response.result.state === "FAILED"
-                                              || response.result.state === "KILLED") {
+                                            } else if (response.result.state === "FAILED") {
+                                              obj.task[index].status = "exception";
+                                              obj.task[index].progress = 100;
+                                              //没有成功的话，没有完成时间
+                                              if (response.result.finishTime != null) {
+                                                obj.task[index].finishTime = obj.$tool.timestampConvert(response.result.finishTime);
+                                              }
+                                              obj.task[index].state = "FAILED";
+                                              obj.task[index].delete = false;
+                                              obj.task[index].killCondition = true;
+                                            } else if (response.result.state === "KILLED") {
                                               obj.task[index].status = "exception";
                                               obj.task[index].progress = 0;
                                               //没有成功的话，没有完成时间
@@ -315,17 +302,25 @@
                                               {
                                                 obj.task[index].finishTime = obj.$tool.timestampConvert(response.result.finishTime);
                                               }
-                                              obj.task[index].state = response.result.state;
+                                              obj.task[index].state = "KILLED";
                                               obj.task[index].delete = false;
                                               obj.task[index].killCondition=true;
-                                            }
-                                             else {
-                                              obj.task[index].progress = response.result.progress*100;
+                                            } else if (response.result.state === "ACCEPTED" || response.result.state === "NEW" || response.result.state === "NEW_SAVING" ||
+                                              response.result.state === "SUBMITTED") {
+                                              obj.task[index].state = "RUNNING";
                                               obj.task[index].status = "success";
+                                              obj.task[index].finishTime = "";
+                                              obj.task[index].download = true;
+                                              obj.task[index].killCondition = false;
+                                              if (response.result.progress !== "") {
+                                                obj.task[index].progress = response.result.progress * 100;
+                                              }
+                                            } else {
+                                              obj.task[index].progress = response.result.progress*100;
                                               obj.task[index].state = "SUCCEEDED";
+                                              obj.task[index].status = "success";
                                               //成功的话，对完成时间进行赋值
-                                              if (response.result.finishTime != null)
-                                              {
+                                              if (response.result.finishTime != null) {
                                                 obj.task[index].finishTime = obj.$tool.timestampConvert(response.result.finishTime);
                                               }
                                               //   row.finishTime = obj.$tool.timestampConvert(response.body.finishedTime);
@@ -339,6 +334,41 @@
 
                                         })
 
+                                  } else if (singleData.finalStatus === "SUCCEEDED") {
+                                    obj.task[index].progress = 100;
+                                    obj.task[index].status = "success";
+                                    obj.task[index].state = "SUCCEEDED";
+                                    //成功的话，对完成时间进行赋值
+                                    if (row.finishTim != null) {
+                                      row.finishTim = obj.$tool.timestampConvert(row.finishTim);
+                                    }
+                                    //   row.finishTime = obj.$tool.timestampConvert(response.body.finishedTime);
+                                    obj.task[index].download = false;
+                                    obj.task[index].view = false;
+                                    obj.task[index].delete = false;
+                                    obj.task[index].map = false;
+                                    obj.task[index].chart = false;
+                                    obj.task[index].killCondition = true;
+                                  } else if (singleData.finalStatus === "FAILED") {
+                                    obj.task[index].status = "exception";
+                                    obj.task[index].progress = 100;
+                                    //没有成功的话，没有完成时间
+                                    if (row.finishTim != null) {
+                                      obj.task[index].finishTime = obj.$tool.timestampConvert(row.finishTime);
+                                    }
+                                    obj.task[index].state = "FAILED";
+                                    obj.task[index].delete = false;
+                                    obj.task[index].killCondition = true;
+                                  } else if (singleData.finalStatus === "KILLED") {
+                                    obj.task[index].state = "exception";
+                                    obj.task[index].progress = 0;
+                                    //没有成功的话，没有完成时间
+                                    if (row.finishTim != null) {
+                                      obj.task[index].finishTime = obj.$tool.timestampConvert(row.finishTim);
+                                    }
+                                    obj.task[index].state = "KILLED";
+                                    obj.task[index].delete = false;
+                                    obj.task[index].killCondition = true;
                                   }
 
                                 }
@@ -347,53 +377,7 @@
                     }).catch(function (error) {
                     obj.$message.error('获取项目数据失败!');
                 });
-            },
-            //加载所点击的数据到地图上
-            openDataResourceOnMap(index, row) {
-                this.$Bus.$emit("mapDialogParams", {
-                    title: row.remarks,
-                    visible: true,
-                    queryUrl: this.$URL.previewParallelResultUrl + row.id + "/geojson",
-                    // queryUrl: this.$URL.previewParallelResultUrl + "geojsonWithOptionalFields",
-                    queryParams: {
-                        // offset: 0,
-                        size: 300,//TODO:需要设置分页,注意offset要乘以size
-                        // jobName:
-                        // ordinal:
-                        // featureType:
-                        //fieldsMap:
-
-                    }
-                });
-            },
-            previewData(index, row) {
-                this.$Bus.$emit("dataDialogParams", {
-                    title: row.remarks,
-                    visible: true,
-                    queryUrl: this.$URL.previewParallelResultUrl + row.applicationId,
-                    queryParams: {
-                        offset: 0,
-                        size: 100//TODO:需要设置分页,注意offset要乘以size
-                    }
-                });
-            },
-            previewChart(index, row) {
-                let that = this;
-                let queryUrl = this.$URL.previewParallelResultUrl + row.applicationId + '?size=50000';
-                that.$axios.get(queryUrl).then(function (res) {
-                    if (res.code == 200) {
-                        that.$Bus.$emit('chartParams', res.body);
-                        that.$Bus.$emit('chartVisible.v', true);
-                    } else {
-                        that.$message(res.message);
-                    }
-                }).catch(function (error) {
-                    console.log(error);
-                });
             }
-            ,refreshData(){
-              this.getProjectData();
-          }
         },
 
         mounted() {
