@@ -84,13 +84,10 @@
   size="small">
     取消
     </el-button>
-    <!--<a type="text" size="small" style="margin-left: 5px" v-bind:class="{'black':key==0,'red':key==1,'yellow':key==2,blue:key==3,'gray':key==4}">-->
-      <!--状态-->
-    <!--</a>-->
     <el-button v-if="scope.row.id!=null"
                  @click.native.prevent="getIndexStatus(scope.row)"
                  type="text"
-                 :class="((scope.row.processed!=100)?((scope.row.processed == 100 && scope.row.error ==0)?'successtext':'errortext'):'warningtext')"
+                  :class="decidetextColor(scope.row)"
                  size="small">
         状态
     </el-button>
@@ -104,7 +101,8 @@
     </span>
 
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item @click.native="indexToBase(scope.row['id'])">入库</el-dropdown-item>
+      <el-dropdown-item @click.native="indexToBase(scope.row['id'])"
+                        :disabled="((scope.row.error ==0)?((scope.row.processed == 100 && scope.row.error ==0)?false:true):false)">入库</el-dropdown-item>
       <el-dropdown-item @click.native="addIndexconnection(scope.row['id'])">索引管理</el-dropdown-item>
       <el-dropdown-item @click.native="singleIndexCon(scope.row['name'])">历史记录</el-dropdown-item>
     </el-dropdown-menu>
@@ -200,6 +198,7 @@
         })
       },
       getIndexStatus(rowData) {
+        this.getconnectionData();
         let msg = "";
         if (rowData.finishTime != null) {
           let error = rowData.error;
@@ -332,12 +331,13 @@
         let that = this;
         this.currentID = id;
         this.$axios.post(this.$URL.indexURL + "?connId=" + this.currentID).then(res => {
-          debugger;
+          // debugger;
+          // that.
           if (res.status == "ok" ) {
             that.key = 1,
             that.$message({
               type: 'success',
-              message: "数据入库中请在连接管理中查看!",
+              message: "数据入库中!",
             });
           } else {
             that.key = 2,
@@ -346,6 +346,7 @@
               message: "数据入库请求失败!"
             });
           }
+          that.getconnectionData();
         }).catch(error => {
           //超时之后在这里捕抓错误信息.
           that.key = 3,
@@ -379,6 +380,17 @@
           console.log(err);
         })
 
+      },
+      decidetextColor(row)
+      {
+        if (row.error != 0)
+          return 'errortext';
+        else if (row.error ==0 && row.processed == 100)
+          return 'successtext';
+        else if (row.error ==0 && row.processed != 100)
+          return 'runningtext';
+        else
+          return 'warningtext';
       }
 
     },
@@ -413,7 +425,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .newConnectionButton {
     position: absolute;
     left: 10px;
@@ -430,6 +442,10 @@
 
   .successtext {
     color: green
+  }
+
+  .runningtext{
+    color: orange;
   }
 
   .warningtext {

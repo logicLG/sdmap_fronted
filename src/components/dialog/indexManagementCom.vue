@@ -141,7 +141,7 @@
               if (res.status == "ok") {
                 that.$message({
                   type: 'success',
-                  message: "数据入库中请前往连接管理中查看!"
+                  // message: "数据入库中请前往连接管理中查看!"
                 });
               } else {
                 that.$message({
