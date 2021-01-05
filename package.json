@@ -12,7 +12,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "element-ui": "^2.0.0-alpha.2",
     "font-awesome": "^4.7.0",
     "openlayers": "^4.6.5",
